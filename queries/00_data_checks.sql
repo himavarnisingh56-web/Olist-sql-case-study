@@ -80,3 +80,26 @@ WITH pay AS (
 SELECT SUM(oi.price) AS item_revenue_after_safe_join
 FROM order_items oi
 JOIN pay ON oi.order_id = pay.order_id;
+
+-- Check 7a: Products with no category at all
+SELECT COUNT(*) AS total_products,
+       SUM(CASE WHEN product_category_name IS NULL THEN 1 ELSE 0 END) AS null_category
+FROM products;
+
+-- Check 7b: Products with no English category name, split by cause
+SELECT CASE WHEN p.product_category_name IS NULL THEN 'no category in products'
+            ELSE 'category has no translation' END AS reason,
+       COUNT(*) AS products
+FROM products p
+LEFT JOIN category_translation t
+  ON p.product_category_name = t.product_category_name
+WHERE t.product_category_name_english IS NULL
+GROUP BY 1;
+
+-- Check 7c: Which categories lack a translation?
+SELECT DISTINCT p.product_category_name
+FROM products p
+LEFT JOIN category_translation t
+  ON p.product_category_name = t.product_category_name
+WHERE t.product_category_name_english IS NULL
+  AND p.product_category_name IS NOT NULL;
