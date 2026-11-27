@@ -30,3 +30,7 @@
 - 8 orders are marked 'delivered' but have no delivery date (0.0083% of 96,478 delivered orders).
 - Decision: delivery-time and late-delivery analysis excludes orders with a null
   delivery date; revenue analysis is unaffected.
+
+## Check 4: Duplicate order IDs
+- orders has 99,441 rows and 99,441 distinct order_ids, so order_id is unique.
+- No deduplication needed on the orders table.
