@@ -43,3 +43,16 @@
   beyond their first, which suggests repeat buying is rare (roughly 3% of customers).
 - Decision: all repeat-purchase and retention analysis uses customer_unique_id.
   Using customer_id would show a 0% repeat rate, because every order has its own id.
+
+## Check 6: Join inflation
+- order_items has 112,650 rows for 98,666 distinct orders (multiple items per order).
+- order_payments has 103,886 rows for 99,440 distinct orders (multiple payment rows per order,
+  e.g. split payments or vouchers).
+- Total item revenue (SUM of price) is 13,591,643.70 BRL (~13.59M).
+- A naive join of order_items to order_payments on order_id inflates this to
+  14,209,115.34, an overstatement of 617,606.61 BRL (~4.5%).
+- Aggregating payments to one row per order first (CTE) gives 13,591,508.73,
+  within ~135 BRL of the baseline. The small gap comes from a few orders that have
+  items but no payment record.
+- Decision: product revenue is calculated from order_items.price (payment_value includes
+  freight). Whenever I need payment data, I aggregate it to order level in a CTE before joining.
