@@ -20,14 +20,12 @@ ORDER BY 1;
 
 -- Check 3a: How many orders are missing a delivery date?
 
-sql
 SELECT COUNT(*) AS total_orders,
        SUM(CASE WHEN order_delivered_customer_date IS NULL THEN 1 ELSE 0 END) AS missing_delivery_date
 FROM orders;
 
 -- Check 3b: Which statuses do the missing dates belong to?
 
-sql
 SELECT order_status,
        COUNT(*) AS orders,
        SUM(CASE WHEN order_delivered_customer_date IS NULL THEN 1 ELSE 0 END) AS missing_delivery_date
@@ -37,7 +35,6 @@ ORDER BY orders DESC;
 
 -- Check 3c: Delivered orders that still have no delivery date
 
-sql
 SELECT COUNT(*) AS delivered_but_no_date
 FROM orders
 WHERE order_status = 'delivered'
@@ -45,14 +42,41 @@ WHERE order_status = 'delivered'
 
 -- Check 4: Is order_id unique in orders?
 
-sql
 SELECT COUNT(*) AS total_rows,
        COUNT(DISTINCT order_id) AS distinct_orders
 FROM orders;
 
 --Check 5: Customer IDs
 
-sql
 SELECT COUNT(DISTINCT customer_id) AS customer_ids,
        COUNT(DISTINCT customer_unique_id) AS real_customers
 FROM customers;
+
+-- Check 6a: Rows per order in order_items
+SELECT COUNT(*) AS item_rows,
+       COUNT(DISTINCT order_id) AS orders_in_items
+FROM order_items;
+
+-- Check 6b: Rows per order in order_payments
+SELECT COUNT(*) AS payment_rows,
+       COUNT(DISTINCT order_id) AS orders_in_payments
+FROM order_payments;
+
+-- Check 6c: Revenue from order_items alone (correct baseline)
+SELECT SUM(price) AS item_revenue
+FROM order_items;
+
+-- Check 6d: Same revenue after a naive join to payments (inflated)
+SELECT SUM(oi.price) AS inflated_item_revenue
+FROM order_items oi
+JOIN order_payments op ON oi.order_id = op.order_id;
+
+-- Check 6e: The correct way: aggregate payments to one row per order first
+WITH pay AS (
+  SELECT order_id, SUM(payment_value) AS total_paid
+  FROM order_payments
+  GROUP BY order_id
+)
+SELECT SUM(oi.price) AS item_revenue_after_safe_join
+FROM order_items oi
+JOIN pay ON oi.order_id = pay.order_id;
