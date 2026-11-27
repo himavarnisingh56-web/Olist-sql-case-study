@@ -1,6 +1,6 @@
 # Data exploration notes
 
-## Order status
+## Check 1: Order status
 | order_status | orders |
 |---|---|
 | delivered | 96,478 |
@@ -17,14 +17,16 @@
 - Decision: revenue and delivery analysis use `order_status = 'delivered'` only, so cancelled or unfulfilled orders don't inflate sales.
 
 ## Check 2: Date range
-- Data runs from [first date] to [last date].
-- Months that look partial: [which ones, and how you could tell,
-  e.g. "only N orders vs. thousands in neighboring months"].
-- Decision: monthly trend analysis excludes [those months].
+- Data runs from 2016-09-04 to 2018-10-17.
+- Sparse months: 2016-09 (4 orders), 2016-10 (324), 2016-12 (1), 2018-09 (16), 2018-10 (4).
+  2016-11 has no orders at all. Steady volume starts in 2017-01 (800 orders).
+- 2018-09 and 2018-10 are low because the dataset ends there, not a real sales drop.
+- Decision: monthly trend and growth analysis covers 2017-01 to 2018-08 only
+  (rule: exclude months with fewer than 500 orders). Overall totals use all delivered orders.
 
 ## Check 3: Missing delivery dates
-- [N] of [total] orders have no delivery date.
-- These belong mostly to statuses: [list them].
-- [N] orders are marked 'delivered' but have no delivery date ([X]% of delivered orders).
+- 2965 of 99441 orders have no delivery date.
+- These belong mostly to statuses: shipped (1,107), canceled (619), unavailable (609), invoiced (314), processing (301), created (5), and approved (2) (2,959 non-delivered orders total).
+- 8 orders are marked 'delivered' but have no delivery date (0.0083% of 96,478 delivered orders).
 - Decision: delivery-time and late-delivery analysis excludes orders with a null
   delivery date; revenue analysis is unaffected.
