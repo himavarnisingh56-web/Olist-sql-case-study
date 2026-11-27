@@ -21,3 +21,10 @@
 - Months that look partial: [which ones, and how you could tell,
   e.g. "only N orders vs. thousands in neighboring months"].
 - Decision: monthly trend analysis excludes [those months].
+
+## Check 3: Missing delivery dates
+- [N] of [total] orders have no delivery date.
+- These belong mostly to statuses: [list them].
+- [N] orders are marked 'delivered' but have no delivery date ([X]% of delivered orders).
+- Decision: delivery-time and late-delivery analysis excludes orders with a null
+  delivery date; revenue analysis is unaffected.
