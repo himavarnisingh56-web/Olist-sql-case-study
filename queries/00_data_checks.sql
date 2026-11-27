@@ -49,3 +49,10 @@ sql
 SELECT COUNT(*) AS total_rows,
        COUNT(DISTINCT order_id) AS distinct_orders
 FROM orders;
+
+--Check 5: Customer IDs
+
+sql
+SELECT COUNT(DISTINCT customer_id) AS customer_ids,
+       COUNT(DISTINCT customer_unique_id) AS real_customers
+FROM customers;
