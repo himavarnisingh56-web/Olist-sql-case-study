@@ -56,3 +56,10 @@
   items but no payment record.
 - Decision: product revenue is calculated from order_items.price (payment_value includes
   freight). Whenever I need payment data, I aggregate it to order level in a CTE before joining.
+
+## Check 7: Category translations
+- 610 of 32,951 products have no category name.
+- 13 more products belong to 2 categories missing from the translation table
+  (pc_gamer, portateis_cozinha_e_preparadores_de_alimentos).
+- Decision: category analysis uses COALESCE(english_name, product_category_name, 'unknown'),
+  so no product is dropped from revenue totals.
