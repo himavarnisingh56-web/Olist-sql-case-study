@@ -34,3 +34,12 @@
 ## Check 4: Duplicate order IDs
 - orders has 99,441 rows and 99,441 distinct order_ids, so order_id is unique.
 - No deduplication needed on the orders table.
+
+## Check 5: Customer identifiers
+- customers has 99,441 distinct customer_ids but only 96,096 distinct customer_unique_ids.
+- customer_id is generated per order, so the same person gets a new customer_id
+  each time they buy. customer_unique_id identifies the actual person.
+- The gap (99,441 - 96,096 = 3,345) is the number of orders placed by returning customers
+  beyond their first, which suggests repeat buying is rare (roughly 3% of customers).
+- Decision: all repeat-purchase and retention analysis uses customer_unique_id.
+  Using customer_id would show a 0% repeat rate, because every order has its own id.
