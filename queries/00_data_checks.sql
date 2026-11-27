@@ -42,3 +42,10 @@ SELECT COUNT(*) AS delivered_but_no_date
 FROM orders
 WHERE order_status = 'delivered'
   AND order_delivered_customer_date IS NULL;
+
+-- Check 4: Is order_id unique in orders?
+
+sql
+SELECT COUNT(*) AS total_rows,
+       COUNT(DISTINCT order_id) AS distinct_orders
+FROM orders;
